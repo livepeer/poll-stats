@@ -1,15 +1,10 @@
 import Head from "next/head";
 import { createApolloFetch } from "apollo-fetch";
-import IPFS from "ipfs-mini";
 import fm from "front-matter";
 import { useRouter } from "next/router";
+import { catIpfsJson } from "../lib/ipfs";
 
-export default function Home({
-  poll,
-  orchestratorPollVoters,
-  orchestratorPollNonVoters,
-  totalDelegatorVotes,
-}) {
+export default function Home({ poll, orchestratorPollVoters, orchestratorPollNonVoters, totalDelegatorVotes }) {
   const router = useRouter();
 
   // If the page is not yet generated, this will be displayed
@@ -31,9 +26,7 @@ export default function Home({
         <h2 style={{ marginTop: "40px" }}>Active Orchestrator Participation</h2>
         <div className="grid">
           <div className="card">
-            <h4 style={{ marginBottom: "24px" }}>
-              Voted ({orchestratorPollVoters.length})
-            </h4>
+            <h4 style={{ marginBottom: "24px" }}>Voted ({orchestratorPollVoters.length})</h4>
             <div>
               {orchestratorPollVoters.map((v, i) => (
                 <div
@@ -59,9 +52,7 @@ export default function Home({
           </div>
 
           <div className="card">
-            <h4 style={{ marginBottom: "24px" }}>
-              Did not vote ({orchestratorPollNonVoters.length})
-            </h4>
+            <h4 style={{ marginBottom: "24px" }}>Did not vote ({orchestratorPollNonVoters.length})</h4>
             <div>
               {orchestratorPollNonVoters.map((addr, i) => (
                 <div key={i}>
@@ -155,8 +146,8 @@ export default function Home({
           border-radius: 5px;
           padding: 0.75rem;
           font-size: 1.1rem;
-          font-family: Menlo, Monaco, Lucida Console, Liberation Mono,
-            DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace;
+          font-family: Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono,
+            Courier New, monospace;
         }
 
         .grid {
@@ -212,9 +203,8 @@ export default function Home({
         body {
           padding: 0;
           margin: 0;
-          font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
-            Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue,
-            sans-serif;
+          font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans,
+            Droid Sans, Helvetica Neue, sans-serif;
         }
 
         * {
@@ -227,7 +217,7 @@ export default function Home({
 
 export async function getStaticPaths() {
   const fetchSubgraph = createApolloFetch({
-    uri: `https://api.thegraph.com/subgraphs/name/livepeer/livepeer`,
+    uri: `https://api.thegraph.com/subgraphs/name/livepeer/arbitrum-one`,
   });
   let { data } = await fetchSubgraph({
     query: `{
@@ -247,7 +237,7 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ params }) {
   const fetchSubgraph = createApolloFetch({
-    uri: `https://api.thegraph.com/subgraphs/name/livepeer/livepeer`,
+    uri: `https://api.thegraph.com/subgraphs/name/livepeer/arbitrum-one`,
   });
 
   let { data } = await fetchSubgraph({
@@ -309,12 +299,7 @@ export async function getStaticProps({ params }) {
 }
 
 async function transformPoll(poll) {
-  const ipfs = new IPFS({
-    host: "ipfs.infura.io",
-    port: 5001,
-    protocol: "https",
-  });
-  const { text } = await ipfs.catJSON(poll.proposal);
+  const { text } = await catIpfsJson(poll.proposal);
   const response: any = fm(text);
 
   return {

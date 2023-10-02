@@ -1,8 +1,8 @@
 import Head from "next/head";
 import { createApolloFetch } from "apollo-fetch";
 import Link from "next/link";
-import IPFS from "ipfs-mini";
 import fm from "front-matter";
+import { catIpfsJson } from "../lib/ipfs";
 
 export default function Home({ polls }) {
   return (
@@ -103,8 +103,8 @@ export default function Home({ polls }) {
           border-radius: 5px;
           padding: 0.75rem;
           font-size: 1.1rem;
-          font-family: Menlo, Monaco, Lucida Console, Liberation Mono,
-            DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace;
+          font-family: Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono,
+            Courier New, monospace;
         }
 
         .grid {
@@ -161,9 +161,8 @@ export default function Home({ polls }) {
         body {
           padding: 0;
           margin: 0;
-          font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
-            Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue,
-            sans-serif;
+          font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans,
+            Droid Sans, Helvetica Neue, sans-serif;
         }
 
         * {
@@ -176,7 +175,7 @@ export default function Home({ polls }) {
 
 export async function getStaticProps() {
   const fetchSubgraph = createApolloFetch({
-    uri: `https://api.thegraph.com/subgraphs/name/livepeer/livepeer`,
+    uri: `https://api.thegraph.com/subgraphs/name/livepeer/arbitrum-one`,
   });
   let { data } = await fetchSubgraph({
     query: `{
@@ -196,14 +195,9 @@ export async function getStaticProps() {
 }
 
 async function transformPolls(polls) {
-  const ipfs = new IPFS({
-    host: "ipfs.infura.io",
-    port: 5001,
-    protocol: "https",
-  });
   let transormedPolls = [];
   for (const poll of polls) {
-    const { text } = await ipfs.catJSON(poll.proposal);
+    const { text } = await catIpfsJson(poll.proposal);
     const response: any = fm(text);
     transormedPolls.push({
       ...response.attributes,
