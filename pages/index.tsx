@@ -175,7 +175,7 @@ export default function Home({ polls }) {
 
 export async function getStaticProps() {
   const fetchSubgraph = createApolloFetch({
-    uri: `https://api.thegraph.com/subgraphs/name/livepeer/livepeer`,
+    uri: `https://api.thegraph.com/subgraphs/name/livepeer/arbitrum-one`,
   });
   let { data } = await fetchSubgraph({
     query: `{

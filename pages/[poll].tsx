@@ -217,7 +217,7 @@ export default function Home({ poll, orchestratorPollVoters, orchestratorPollNon
 
 export async function getStaticPaths() {
   const fetchSubgraph = createApolloFetch({
-    uri: `https://api.thegraph.com/subgraphs/name/livepeer/livepeer`,
+    uri: `https://api.thegraph.com/subgraphs/name/livepeer/arbitrum-one`,
   });
   let { data } = await fetchSubgraph({
     query: `{
