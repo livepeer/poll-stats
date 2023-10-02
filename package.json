@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "engine": {
-    "node": "18.x"
+    "node": "16.x"
   },
   "scripts": {
     "dev": "next dev",
@@ -19,7 +19,7 @@
     "react-dom": "16.13.1"
   },
   "devDependencies": {
-    "@types/node": "^18.18.3",
+    "@types/node": "^16.18.57",
     "@types/react": "^16.9.46",
     "typescript": "^3.9.7"
   }
