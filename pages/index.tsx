@@ -1,8 +1,8 @@
 import Head from "next/head";
 import { createApolloFetch } from "apollo-fetch";
 import Link from "next/link";
-import IPFS from "ipfs-mini";
 import fm from "front-matter";
+import { catIpfsJson } from "../lib/ipfs";
 
 export default function Home({ polls }) {
   return (
@@ -195,14 +195,9 @@ export async function getStaticProps() {
 }
 
 async function transformPolls(polls) {
-  const ipfs = new IPFS({
-    host: "ipfs.infura.io",
-    port: 5001,
-    protocol: "https",
-  });
   let transormedPolls = [];
   for (const poll of polls) {
-    const { text } = await ipfs.catJSON(poll.proposal);
+    const { text } = await catIpfsJson(poll.proposal);
     const response: any = fm(text);
     transormedPolls.push({
       ...response.attributes,

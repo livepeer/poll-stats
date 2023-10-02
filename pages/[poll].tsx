@@ -1,8 +1,8 @@
 import Head from "next/head";
 import { createApolloFetch } from "apollo-fetch";
-import IPFS from "ipfs-mini";
 import fm from "front-matter";
 import { useRouter } from "next/router";
+import { catIpfsJson } from "../lib/ipfs";
 
 export default function Home({ poll, orchestratorPollVoters, orchestratorPollNonVoters, totalDelegatorVotes }) {
   const router = useRouter();
@@ -299,12 +299,7 @@ export async function getStaticProps({ params }) {
 }
 
 async function transformPoll(poll) {
-  const ipfs = new IPFS({
-    host: "ipfs.infura.io",
-    port: 5001,
-    protocol: "https",
-  });
-  const { text } = await ipfs.catJSON(poll.proposal);
+  const { text } = await catIpfsJson(poll.proposal);
   const response: any = fm(text);
 
   return {
