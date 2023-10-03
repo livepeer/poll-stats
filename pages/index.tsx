@@ -179,7 +179,7 @@ export async function getStaticProps() {
   });
   let { data } = await fetchSubgraph({
     query: `{
-        polls {
+        polls(where: {id_not: "0x17759123c2ddcd774a1a0c577fa32a24deff5629"}) {
           id
           proposal
         }
